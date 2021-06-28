@@ -34,8 +34,17 @@ async def add_course(payload: Course):
 @app.put('/{id')
 async def update_course(id: int, payload: Course):
     course = payload.dict()
-    course_length = len(fake_course_db)
-    if 0 <= id <= course_length:
+    courses_length = len(fake_course_db)
+    if 0 <= id <= courses_length:
         fake_course_db[id] = course
+        return None
+    raise HTTPException(status_code=404, detail='Course with given id is not found')
+
+
+@app.delete('/{id}')
+async def delete_course(id: int):
+    courses_length = len(fake_course_db)
+    if 0 <= id <= courses_length:
+        del fake_course_db[id]
         return None
     raise HTTPException(status_code=404, detail='Course with given id is not found')
