@@ -5,25 +5,20 @@ from course_service.app.api.models import Course
 
 courses = APIRouter()
 
-fake_course_db = [
-    {
-        'name': 'Python',
-        'description': 'Introduction to Programming',
-        'students': ['Marcelo Ceolin', 'Jean C']
-    }
-]
 
-
-@courses.get('/', response_model=List[Course])
+@courses.get('/', response_model=List[CourseOut])
 async def index():
-    return fake_course_db
+    return await db_manager.get_all_courses()
 
 
 @courses.post('/', status_code=201)
-async def add_course(payload: Course):
-    course = payload.dict()
-    fake_course_db.append(course)
-    return {'id': len(fake_course_db) - 1}
+async def add_course(payload: CourseIn):
+    course_id = await db_manager.add_course(payload)
+    response = {
+        'id': course_id,
+        **payload.dict()
+    }
+    return response
 
 
 @courses.put('/{id')
