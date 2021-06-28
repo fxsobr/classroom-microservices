@@ -22,13 +22,18 @@ async def add_course(payload: CourseIn):
 
 
 @courses.put('/{id')
-async def update_course(id: int, payload: Course):
-    course = payload.dict()
-    courses_length = len(fake_course_db)
-    if 0 <= id <= courses_length:
-        fake_course_db[id] = course
-        return None
-    raise HTTPException(status_code=404, detail='Course with given id is not found')
+async def update_course(id: int, payload: CourseIn):
+    course = await db_manager.get_movie(id)
+    if not course:
+        raise HTTPException(status_code=404, detail='Course not found')
+
+    update_data = payload.dict(exclude_unset=True)
+    course_in_db = CourseIn(**course)
+
+    updated_course = course_in_db.copy(update=update_data)
+
+    return await db_manager.update_course(id, updated_course)
+
 
 
 @courses.delete('/{id}')
