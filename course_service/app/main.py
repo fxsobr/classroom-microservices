@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from api.courses import courses
+from course_service.app.api.courses import courses
 
 app = FastAPI()
 

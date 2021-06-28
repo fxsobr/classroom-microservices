@@ -14,19 +14,19 @@ fake_course_db = [
 ]
 
 
-@app.get('/', response_model=List[Course])
+@courses.get('/', response_model=List[Course])
 async def index():
     return fake_course_db
 
 
-@app.post('/', status_code=201)
+@courses.post('/', status_code=201)
 async def add_course(payload: Course):
     course = payload.dict()
     fake_course_db.append(course)
     return {'id': len(fake_course_db) - 1}
 
 
-@app.put('/{id')
+@courses.put('/{id')
 async def update_course(id: int, payload: Course):
     course = payload.dict()
     courses_length = len(fake_course_db)
@@ -36,7 +36,7 @@ async def update_course(id: int, payload: Course):
     raise HTTPException(status_code=404, detail='Course with given id is not found')
 
 
-@app.delete('/{id}')
+@courses.delete('/{id}')
 async def delete_course(id: int):
     courses_length = len(fake_course_db)
     if 0 <= id <= courses_length:
